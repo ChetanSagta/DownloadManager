@@ -6,9 +6,10 @@ public class DownloadItem{
 
     private int sNo;
     private String name;
-    private double totalSize;
+    private long totalSize;
+    private String totalSizeStr;
     private DownloadState downloadState;
-    private ProgressBar progressBar;
+    private final ProgressBar progressBar;
     private String filePath;
     private String downloadSpeed;
 
@@ -16,13 +17,14 @@ public class DownloadItem{
         sNo=0;
         name="";
         totalSize=0;
+        totalSizeStr="";
         downloadState = DownloadState.STOP;
         filePath="";
         downloadSpeed="0";
         progressBar=new ProgressBar(0);
     }
 
-    public DownloadItem(int sNo, String name, double totalSize, DownloadState downloadState,ProgressBar progressBar) {
+    public DownloadItem(int sNo, String name, long totalSize, DownloadState downloadState,ProgressBar progressBar, String networkUrl) {
         this.sNo = sNo;
         this.name = name;
         this.totalSize = totalSize;
@@ -46,11 +48,11 @@ public class DownloadItem{
         this.name = name;
     }
 
-    public double getTotalSize() {
+    public long getTotalSize() {
         return totalSize;
     }
 
-    public void setTotalSize(double totalSize) {
+    public void setTotalSize(long totalSize) {
         this.totalSize = totalSize;
     }
 
@@ -82,7 +84,28 @@ public class DownloadItem{
         return progressBar;
     }
 
-    public void setProgressBar(ProgressBar progressBar) {
-        this.progressBar = progressBar;
+    public void setProgressBar(long progress) {
+        progressBar.setProgress(progress);
+    }
+
+    public String getTotalSizeStr() {
+        return totalSizeStr;
+    }
+
+    public void setTotalSizeStr(String totalSizeStr) {
+        this.totalSizeStr = totalSizeStr;
+    }
+
+    @Override
+    public String toString() {
+        return "DownloadItem{" +
+                "sNo=" + sNo +
+                ", name='" + name + '\'' +
+                ", totalSize=" + totalSize +
+                ", downloadState=" + downloadState +
+                ", progressBar=" + progressBar +
+                ", filePath='" + filePath + '\'' +
+                ", downloadSpeed='" + downloadSpeed + '\'' +
+                '}';
     }
 }

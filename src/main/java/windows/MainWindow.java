@@ -1,7 +1,6 @@
 package windows;
 
-import models.DownloadItem;
-import models.DownloadState;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.geometry.Insets;
 import javafx.scene.Cursor;
 import javafx.scene.Scene;
@@ -9,18 +8,26 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import models.DownloadState;
+import models.DownloadTask;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
+import java.io.IOException;
+
 public class MainWindow {
 
-    private MainWindow(){
+    private static MainWindow mainWindowInstance = null;
+
+    private TableView<DownloadTask> tableView;
+    private DownloadTask selectedItem;
+
+    private MainWindow() {
         tableView = new TableView<>();
     }
 
@@ -32,25 +39,28 @@ public class MainWindow {
 
 
         Button addButton = new Button("Add");
-        addButton.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-            new AddNewUrlWindow(primaryStage);
-        });
+        addButton.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> new AddNewUrlWindow(primaryStage));
         Button deleteButton = new Button("Delete");
-        deleteButton.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+        deleteButton.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> tableView.getItems().remove(selectedItem));
 
-        });
         Button playPauseButton = new Button("Play/Pause");
         playPauseButton.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-            if (selectedItem.getDownloadState() == DownloadState.PAUSE || selectedItem.getDownloadState() == DownloadState.STOP)
-                selectedItem.setDownloadState(DownloadState.PLAY);
-            else if (selectedItem.getDownloadState() == DownloadState.PLAY)
-                selectedItem.setDownloadState(DownloadState.PAUSE);
+            if (selectedItem.getItem().getDownloadState() == DownloadState.PAUSE || selectedItem.getItem().getDownloadState() == DownloadState.STOP) {
+                selectedItem.getItem().setDownloadState(DownloadState.PLAY);
+                selectedItem.start();
+            }
+            else if (selectedItem.getItem().getDownloadState() == DownloadState.PLAY)
+                selectedItem.getItem().setDownloadState(DownloadState.PAUSE);
 
+            tableView.refresh();
         });
+
         Button stop = new Button("Stop");
         stop.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-            selectedItem.setDownloadState(DownloadState.STOP);
+            selectedItem.getItem().setDownloadState(DownloadState.STOP);
+            tableView.refresh();
         });
+
         Button settings = new Button("Settings");
         settings.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
             logger.info("Settings Button Pressed");
@@ -60,37 +70,50 @@ public class MainWindow {
         optionButtons.setSpacing(10);
         optionButtons.setBorder(new Border(new BorderStroke(Color.BLACK,
                 BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
-        optionButtons.setPadding(new Insets(10, 0, 10, 100));
+        optionButtons.setPadding(new Insets(10, 0, 10, 170));
         optionButtons.fillHeightProperty();
 
-        BorderPane borderPane = new BorderPane();
+//        BorderPane borderPane = new BorderPane();
 
         tableView = new TableView<>();
-        TableColumn<DownloadItem, Integer> sNoCol = new TableColumn<>("S.No.");
-        sNoCol.setCellValueFactory(new PropertyValueFactory<>("sNo"));
+        tableView.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
+            selectedItem = tableView.getSelectionModel().getSelectedItem();
+        });
 
-        TableColumn<DownloadItem, String> nameCol = new TableColumn<>("Name");
-        nameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
+        TableColumn<DownloadTask, Integer> sNoCol = new TableColumn<>("S.No.");
+        sNoCol.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getItem().getSNo()));
 
-        TableColumn<DownloadItem, Double> sizeCol = new TableColumn<>("Size");
-        sizeCol.setCellValueFactory(new PropertyValueFactory<>("totalSize"));
+        TableColumn<DownloadTask, String> nameCol = new TableColumn<>("Name");
+        nameCol.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getItem().getName()));
 
-        TableColumn<DownloadItem, ProgressBar> progressCol = new TableColumn<>("Progress");
-        progressCol.setCellValueFactory(new PropertyValueFactory<>("progressBar"));
+        TableColumn<DownloadTask, Long> sizeCol = new TableColumn<>("Size");
+        sizeCol.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getItem().getTotalSize()));
 
-        tableView.getColumns().addAll(sNoCol, nameCol, sizeCol, progressCol);
+        TableColumn<DownloadTask, String> sizeStrCol = new TableColumn<>("Size String");
+        sizeStrCol.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getItem().getTotalSizeStr()));
 
-        tableView.getItems().add(new DownloadItem(1, "chetan", 10.0, DownloadState.PLAY, new ProgressBar(0.50)));
+        TableColumn<DownloadTask, String> downloadSpeed = new TableColumn<>("Download Speed");
+        downloadSpeed.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getItem().getDownloadSpeed()));
 
+        TableColumn<DownloadTask, String> fileLocation = new TableColumn<>("Location");
+        fileLocation.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getItem().getFilePath()));
+
+        TableColumn<DownloadTask, ProgressBar> progressCol = new TableColumn<>("Progress");
+        progressCol.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getItem().getProgressBar()));
+
+        TableColumn<DownloadTask, DownloadState> downloadState = new TableColumn<>("DownloadState");
+        downloadState.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getItem().getDownloadState()));
+
+        tableView.getColumns().addAll(sNoCol, nameCol, sizeCol, sizeStrCol, downloadSpeed, fileLocation, progressCol, downloadState);
         tableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
-        borderPane.setCenter(tableView);
+//        borderPane.setCenter(tableView);
 
-        VBox vBox = new VBox(optionButtons, borderPane);
+        VBox vBox = new VBox(optionButtons, tableView);
         vBox.setCursor(Cursor.HAND);
         vBox.setFillWidth(true);
 
-        Scene primaryScene = new Scene(vBox, 500, 500);
+        Scene primaryScene = new Scene(vBox);
         primaryStage.setScene(primaryScene);
         primaryStage.sizeToScene();
         primaryStage.setResizable(false);
@@ -98,7 +121,7 @@ public class MainWindow {
 
     }
 
-    public void addDownloadItemToTheList(DownloadItem item) {
+    public void addDownloadItemToTheList(DownloadTask item) {
         tableView.getItems().add(item);
     }
 
@@ -109,11 +132,13 @@ public class MainWindow {
         return mainWindowInstance;
     }
 
+    public int tableViewLength(){
+        return tableView.getItems().size();
+    }
 
-    private static MainWindow mainWindowInstance = null;
-
-    private TableView<DownloadItem> tableView;
-    private DownloadItem selectedItem;
+    public void updateTableView(){
+        tableView.refresh();
+    }
 
     private static final Logger logger = LogManager.getLogger(MainWindow.class.getSimpleName());
 }
