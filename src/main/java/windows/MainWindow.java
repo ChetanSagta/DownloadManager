@@ -18,8 +18,6 @@ import models.DownloadTask;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
-import java.io.IOException;
-
 public class MainWindow {
 
     private static MainWindow mainWindowInstance = null;
@@ -45,11 +43,10 @@ public class MainWindow {
 
         Button playPauseButton = new Button("Play/Pause");
         playPauseButton.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-            if (selectedItem.getItem().getDownloadState() == DownloadState.PAUSE || selectedItem.getItem().getDownloadState() == DownloadState.STOP) {
+            if ((selectedItem.getItem().getDownloadState() == DownloadState.PAUSE) || (selectedItem.getItem().getDownloadState() == DownloadState.STOP)) {
                 selectedItem.getItem().setDownloadState(DownloadState.PLAY);
                 selectedItem.start();
-            }
-            else if (selectedItem.getItem().getDownloadState() == DownloadState.PLAY)
+            } else if (selectedItem.getItem().getDownloadState() == DownloadState.PLAY)
                 selectedItem.getItem().setDownloadState(DownloadState.PAUSE);
 
             tableView.refresh();
@@ -72,8 +69,6 @@ public class MainWindow {
                 BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
         optionButtons.setPadding(new Insets(10, 0, 10, 170));
         optionButtons.fillHeightProperty();
-
-//        BorderPane borderPane = new BorderPane();
 
         tableView = new TableView<>();
         tableView.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
@@ -107,8 +102,6 @@ public class MainWindow {
         tableView.getColumns().addAll(sNoCol, nameCol, sizeCol, sizeStrCol, downloadSpeed, fileLocation, progressCol, downloadState);
         tableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
-//        borderPane.setCenter(tableView);
-
         VBox vBox = new VBox(optionButtons, tableView);
         vBox.setCursor(Cursor.HAND);
         vBox.setFillWidth(true);
@@ -132,11 +125,11 @@ public class MainWindow {
         return mainWindowInstance;
     }
 
-    public int tableViewLength(){
+    public int tableViewLength() {
         return tableView.getItems().size();
     }
 
-    public void updateTableView(){
+    public void updateTableView() {
         tableView.refresh();
     }
 

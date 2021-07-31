@@ -70,12 +70,11 @@ public class DownloadTask extends Thread {
             while (item.getDownloadState() == DownloadState.PLAY && (bytesRead = inputStream.read(networkBytes,0,1024)) != -1) {
                 fileOutputStream.write(networkBytes,0,bytesRead);
                 fileSystemClient.findFileSize();
-                logger.info("File Size : " + fileSystemClient.getFileSize() + "Remote File : " + remoteFileSize);
+//                logger.info("File Size : " + fileSystemClient.getFileSize() + "Remote File : " + remoteFileSize);
                 item.setProgressBar(fileSystemClient.getFileSize()/remoteFileSize);
-                logger.info("Progress Bar: "+ item.getProgressBar());
+//                logger.info("Progress Bar: "+ item.getProgressBar());
                 MainWindow.getInstance().updateTableView();
             }
-            logger.info("Downloading Completed");
         } catch(IOException ex){
             logger.info("Exception caught while downloading file : " + ex);
         }
