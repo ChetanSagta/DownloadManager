@@ -5,7 +5,7 @@ import javafx.scene.control.ProgressBar;
 public class DownloadItem{
 
     private int sNo;
-    private String name;
+    private String fileName;
     private long totalSize;
     private String totalSizeStr;
     private DownloadState downloadState;
@@ -15,7 +15,7 @@ public class DownloadItem{
 
     public DownloadItem(){
         sNo=0;
-        name="";
+        fileName ="";
         totalSize=0;
         totalSizeStr="";
         downloadState = DownloadState.STOP;
@@ -24,9 +24,9 @@ public class DownloadItem{
         progressBar=new ProgressBar(0);
     }
 
-    public DownloadItem(int sNo, String name, long totalSize, DownloadState downloadState,ProgressBar progressBar, String networkUrl) {
+    public DownloadItem(int sNo, String name, long totalSize, DownloadState downloadState,ProgressBar progressBar) {
         this.sNo = sNo;
-        this.name = name;
+        this.fileName = name;
         this.totalSize = totalSize;
         this.downloadState = downloadState;
         this.progressBar = progressBar;
@@ -40,12 +40,12 @@ public class DownloadItem{
         this.sNo = sNo;
     }
 
-    public String getName() {
-        return name;
+    public String getFileName() {
+        return fileName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
     }
 
     public long getTotalSize() {
@@ -84,7 +84,7 @@ public class DownloadItem{
         return progressBar;
     }
 
-    public void setProgressBar(long progress) {
+    public void setProgressBar(double progress) {
         progressBar.setProgress(progress);
     }
 
@@ -100,7 +100,7 @@ public class DownloadItem{
     public String toString() {
         return "DownloadItem{" +
                 "sNo=" + sNo +
-                ", name='" + name + '\'' +
+                ", name='" + fileName + '\'' +
                 ", totalSize=" + totalSize +
                 ", downloadState=" + downloadState +
                 ", progressBar=" + progressBar +

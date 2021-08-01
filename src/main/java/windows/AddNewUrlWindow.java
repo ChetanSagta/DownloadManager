@@ -23,32 +23,32 @@ public class AddNewUrlWindow extends Stage {
 
     private TextField filePathTextField = null;
     private TextField fileNameTextField = null;
+    private String fileName = "";
 
     AddNewUrlWindow(Stage primaryStage) {
         var addUrlStage = new Stage();
-        var textMessage = new Text("ADD URL: ");
+        var addUrlText = new Text("ADD URL: ");
         DownloadTask downloadTask = new DownloadTask();
 
-        var textField = new TextField();
-        textField.textProperty().addListener((observable, oldValue,newValue) -> {
+        var urlNameTextField = new TextField();
+        urlNameTextField.textProperty().addListener((observable, oldValue,newValue) ->
                 new Thread(()-> {
-                    if(textField.getText().length() > 0) {
-                        downloadTask.setNetworkClient(textField.getText());
-                        String fileName = downloadTask.getNetworkClient().getRemoteFileName();
+                    if(urlNameTextField.getText().length() > 0) {
+                        downloadTask.setNetworkClient(urlNameTextField.getText());
+                        fileName = downloadTask.getNetworkClient().getRemoteFileName();
                         fileNameTextField.setText(fileName);
-                        downloadTask.getNetworkClient().setNetworkUrl(textField.getText());
-                        downloadTask.getItem().setName(fileName);
-                        downloadTask.getItem().setProgressBar(0);
-                        downloadTask.getItem().setTotalSizeStr(downloadTask.getNetworkClient().getFileSizeStr());
-                        downloadTask.getItem().setTotalSize(downloadTask.getNetworkClient().getRemoteFileSize());
                     }
-                }).start();
-        });
+                }).start());
 
         var okBtn = new Button("OK");
         okBtn.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
             logger.info("FilePathTextField : " + fileNameTextField.getText());
             if(filePathTextField.getLength() > 0 ){
+                downloadTask.getNetworkClient().setNetworkUrl(urlNameTextField.getText());
+                downloadTask.getItem().setFileName(fileNameTextField.getText());
+                downloadTask.getItem().setProgressBar(0);
+                downloadTask.getItem().setTotalSizeStr(downloadTask.getNetworkClient().getFileSizeStr());
+                downloadTask.getItem().setTotalSize(downloadTask.getNetworkClient().getRemoteFileSize());
                 downloadTask.getItem().setFilePath(filePathTextField.getText());
                 MainWindow mainWindow = MainWindow.getInstance();
                 downloadTask.getItem().setSNo(mainWindow.tableViewLength()+1);
@@ -60,9 +60,9 @@ public class AddNewUrlWindow extends Stage {
         var cancelBtn = new Button("Cancel");
         cancelBtn.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> addUrlStage.close());
 
-        var hBox = new HBox(textMessage, textField, okBtn, cancelBtn);
-        hBox.setSpacing(5);
-        hBox.setPadding(new Insets(5, 0, 10, 10));
+        var addUrlHBox = new HBox(addUrlText, urlNameTextField, okBtn, cancelBtn);
+        addUrlHBox.setSpacing(5);
+        addUrlHBox.setPadding(new Insets(5, 0, 10, 10));
 
         filePathTextField = new TextField();
         filePathTextField.setPrefWidth(230);
@@ -74,18 +74,18 @@ public class AddNewUrlWindow extends Stage {
             filePathTextField.setText(selectedFile.getAbsolutePath());
         });
 
-        var fileSelectHBox = new HBox(browseBtn, filePathTextField);
-        fileSelectHBox.setSpacing(10);
-        fileSelectHBox.setPadding(new Insets(5, 0, 10, 10));
+        var directorySelectHBox = new HBox(browseBtn, filePathTextField);
+        directorySelectHBox.setSpacing(10);
+        directorySelectHBox.setPadding(new Insets(5, 0, 10, 10));
 
         var fileNameText = new Text("FileName : ");
         fileNameTextField = new TextField();
 
-        var fileInfoBox = new HBox(fileNameText, fileNameTextField);
-        fileInfoBox.setSpacing(10);
-        fileInfoBox.setPadding(new Insets(5, 0, 10, 10));
+        var fileNameHBox = new HBox(fileNameText, fileNameTextField);
+        fileNameHBox.setSpacing(10);
+        fileNameHBox.setPadding(new Insets(5, 0, 10, 10));
 
-        var vBox = new VBox(hBox, fileInfoBox, fileSelectHBox);
+        var vBox = new VBox(addUrlHBox, fileNameHBox, directorySelectHBox);
 
         var scene = new Scene(vBox);
 

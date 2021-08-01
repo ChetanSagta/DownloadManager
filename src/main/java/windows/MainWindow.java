@@ -1,5 +1,6 @@
 package windows;
 
+import javafx.application.Platform;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.geometry.Insets;
 import javafx.scene.Cursor;
@@ -17,6 +18,7 @@ import models.DownloadState;
 import models.DownloadTask;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
+import utilities.ThreadPool;
 
 public class MainWindow {
 
@@ -45,7 +47,7 @@ public class MainWindow {
         playPauseButton.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
             if ((selectedItem.getItem().getDownloadState() == DownloadState.PAUSE) || (selectedItem.getItem().getDownloadState() == DownloadState.STOP)) {
                 selectedItem.getItem().setDownloadState(DownloadState.PLAY);
-                selectedItem.start();
+                ThreadPool.getInstance().executeTask(selectedItem);
             } else if (selectedItem.getItem().getDownloadState() == DownloadState.PLAY)
                 selectedItem.getItem().setDownloadState(DownloadState.PAUSE);
 
@@ -79,7 +81,7 @@ public class MainWindow {
         sNoCol.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getItem().getSNo()));
 
         TableColumn<DownloadTask, String> nameCol = new TableColumn<>("Name");
-        nameCol.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getItem().getName()));
+        nameCol.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getItem().getFileName()));
 
         TableColumn<DownloadTask, Long> sizeCol = new TableColumn<>("Size");
         sizeCol.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getItem().getTotalSize()));
@@ -111,6 +113,11 @@ public class MainWindow {
         primaryStage.sizeToScene();
         primaryStage.setResizable(false);
         primaryStage.show();
+
+        primaryStage.setOnCloseRequest((event) -> {
+                    Platform.exit();
+                    System.exit(0);
+        });
 
     }
 

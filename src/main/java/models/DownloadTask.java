@@ -11,11 +11,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class DownloadTask extends Thread {
+public class DownloadTask implements Runnable{
 
     private NetworkClient networkClient;
     private DownloadItem item;
-    private FileSystemClient fileSystemClient;
+    private final FileSystemClient fileSystemClient;
 
     public DownloadTask() {
         item = new DownloadItem();
@@ -48,7 +48,8 @@ public class DownloadTask extends Thread {
     public void updateProgressBar(){
         long remoteFileSize = networkClient.getRemoteFileSize();
         long localFileSize = fileSystemClient.getFileSize();
-        item.setProgressBar(remoteFileSize/localFileSize);
+        logger.info("Remote: " + remoteFileSize + " -> Local: " + localFileSize);
+        item.setProgressBar((remoteFileSize*1.0)/localFileSize);
     }
 
     public void downloadFile(){
@@ -57,24 +58,26 @@ public class DownloadTask extends Thread {
 
         try {
             logger.info("FilePath : " + item.getFilePath());
-            String fileName = fileSystemClient.getFileName();
-            fileSystemClient.setFilePath(item.getFilePath()); fileSystemClient.setFileName(item.getName());
-            logger.info("FileName : " + fileName);
-            fileOutputStream = new FileOutputStream(item.getFilePath() + File.pathSeparatorChar + item.getName());
+            fileSystemClient.setFilePath(item.getFilePath());
+            fileSystemClient.setFileName(item.getFileName());
+
+            fileSystemClient.createFilePath();
+
+            fileOutputStream = new FileOutputStream(fileSystemClient.getFilePath() + File.separatorChar + fileSystemClient.getFileName());
             inputStream = networkClient.getInputStream();
             logger.info("InputStream Created");
             byte[] networkBytes = new byte[1024];
             int bytesRead;
-            long remoteFileSize = networkClient.getRemoteFileSize();
             logger.info("Downloading started");
             while (item.getDownloadState() == DownloadState.PLAY && (bytesRead = inputStream.read(networkBytes,0,1024)) != -1) {
                 fileOutputStream.write(networkBytes,0,bytesRead);
                 fileSystemClient.findFileSize();
-//                logger.info("File Size : " + fileSystemClient.getFileSize() + "Remote File : " + remoteFileSize);
-                item.setProgressBar(fileSystemClient.getFileSize()/remoteFileSize);
-//                logger.info("Progress Bar: "+ item.getProgressBar());
+                updateProgressBar();
+                logger.info("Current Progress Value : " + item.getProgressBar().getProgress());
+                if(item.getProgressBar().getProgress() == 1.0) item.setDownloadState(DownloadState.COMPLETED);
                 MainWindow.getInstance().updateTableView();
             }
+            logger.info("Current Download Status " + item.getDownloadState());
         } catch(IOException ex){
             logger.info("Exception caught while downloading file : " + ex);
         }
