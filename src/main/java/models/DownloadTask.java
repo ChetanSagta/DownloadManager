@@ -29,6 +29,10 @@ public class DownloadTask implements Runnable{
         fileSystemClient = new FileSystemClient();
     }
 
+    public FileSystemClient getFileSystemClient(){
+        return fileSystemClient;
+    }
+
     public NetworkClient getNetworkClient() {
         return networkClient;
     }
@@ -48,8 +52,7 @@ public class DownloadTask implements Runnable{
     public void updateProgressBar(){
         long remoteFileSize = networkClient.getRemoteFileSize();
         long localFileSize = fileSystemClient.getFileSize();
-        logger.info("Remote: " + remoteFileSize + " -> Local: " + localFileSize);
-        item.setProgressBar((remoteFileSize*1.0)/localFileSize);
+        item.setProgressBar((localFileSize*1.0)/remoteFileSize);
     }
 
     public void downloadFile(){
@@ -57,19 +60,26 @@ public class DownloadTask implements Runnable{
         InputStream inputStream = null;
 
         try {
-            logger.info("FilePath : " + item.getFilePath());
-            fileSystemClient.setFilePath(item.getFilePath());
-            fileSystemClient.setFileName(item.getFileName());
+            logger.info("FilePath : " + fileSystemClient.getFilePath());
+            fileSystemClient.createDirectories();
 
-            fileSystemClient.createFilePath();
-
-            fileOutputStream = new FileOutputStream(fileSystemClient.getFilePath() + File.separatorChar + fileSystemClient.getFileName());
+            String fileStreamPath = fileSystemClient.getFilePath() + File.separatorChar + fileSystemClient.getFileName();
+            //just a workaround to create new connection for downloading using old connection already created
+            // when fetching the remote file name during adding new url to the download list
+            networkClient = new NetworkClient(networkClient.getNetworkUrl());
+            if(fileSystemClient.isFilePresent()) {
+                fileSystemClient.findFileSize();
+                networkClient.setRangeBytes(fileSystemClient.getFileSize());
+                fileOutputStream = new FileOutputStream(fileStreamPath, true);
+            }
+            else
+                fileOutputStream = new FileOutputStream(fileStreamPath);
             inputStream = networkClient.getInputStream();
             logger.info("InputStream Created");
-            byte[] networkBytes = new byte[1024];
+            byte[] networkBytes = new byte[4096];
             int bytesRead;
             logger.info("Downloading started");
-            while (item.getDownloadState() == DownloadState.PLAY && (bytesRead = inputStream.read(networkBytes,0,1024)) != -1) {
+            while (item.getDownloadState() == DownloadState.PLAY && (bytesRead = inputStream.read(networkBytes,0,4096)) != -1) {
                 fileOutputStream.write(networkBytes,0,bytesRead);
                 fileSystemClient.findFileSize();
                 updateProgressBar();
@@ -83,11 +93,10 @@ public class DownloadTask implements Runnable{
         }
         finally {
             try {
-                logger.info("File Downloaded at: " + item.getFilePath());
-                assert fileOutputStream != null;
-                fileOutputStream.close();
-                assert inputStream != null;
-                inputStream.close();
+                if(fileOutputStream!=null)
+                    fileOutputStream.close();
+                if(inputStream!=null)
+                    inputStream.close();
             }
             catch(IOException ex){
                 logger.info("Exception caught while downloading file : " + ex);

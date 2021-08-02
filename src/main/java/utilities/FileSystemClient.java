@@ -37,7 +37,19 @@ public class FileSystemClient {
         return fileName;
     }
 
-    public void createFilePath() {
+    public String getFileSizeStr() {
+        long tempFileSize;
+        if ((tempFileSize = fileSize / 1024) < 1024) {
+            return tempFileSize + "KB";
+        } else if ((tempFileSize = fileSize / (1024 * 1024)) < 1024) {
+            return tempFileSize + "MB";
+        } else if ((tempFileSize = fileSize / (1024 * 1024 * 1024)) < 1024) {
+            return tempFileSize + "GB";
+        } else
+            return fileSize + "B";
+    }
+
+    public void createDirectories() {
         file = new File(filePath);
         if (!file.isDirectory()) {
             boolean directoryCreated = file.mkdirs();
@@ -45,6 +57,11 @@ public class FileSystemClient {
                 logger.info("Directory not created");
             }
         }
+    }
+
+    public boolean isFilePresent(){
+        File tempFile = new File(filePath + File.separatorChar + fileName);
+        return tempFile.exists();
     }
 
     private static final Logger logger = LogManager.getLogger(FileSystemClient.class.getSimpleName());

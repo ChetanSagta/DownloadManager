@@ -5,21 +5,22 @@ import org.apache.log4j.Logger;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLConnection;
 import java.nio.file.Paths;
 
 public class NetworkClient {
 
     private URL url = null;
-    private URLConnection urlConnection = null;
+    private HttpURLConnection httpURLConnection = null;
     private String networkUrl = null;
     private long remoteFileSize = 1;
 
     public NetworkClient(String networkUrl) {
         try {
-            url = new URL(networkUrl);
-            urlConnection = url.openConnection();
+            this.networkUrl = networkUrl;
+            url = new URL(this.networkUrl);
+            httpURLConnection = (HttpURLConnection) url.openConnection();
         } catch (IOException ex) {
             logger.debug("Exception raised : " + ex);
         }
@@ -34,7 +35,7 @@ public class NetworkClient {
     }
 
     public String getFileSizeStr() {
-        long contentLength = urlConnection.getContentLengthLong();
+        long contentLength = httpURLConnection.getContentLengthLong();
         long tempContentLength;
         if ((tempContentLength = contentLength / 1024) < 1024) {
             return tempContentLength + "KB";
@@ -47,7 +48,7 @@ public class NetworkClient {
     }
 
     public void setRemoteFileSize() {
-        remoteFileSize = urlConnection.getContentLengthLong();
+        remoteFileSize = httpURLConnection.getContentLengthLong();
     }
 
     public long getRemoteFileSize() {
@@ -61,11 +62,28 @@ public class NetworkClient {
     public InputStream getInputStream() {
         try {
             setRemoteFileSize();
-            return urlConnection.getInputStream();
+            return httpURLConnection.getInputStream();
         } catch (IOException ex) {
             logger.info("Exception Caught While Returning input stream from Network Client : " + ex);
         }
         return null;
+    }
+
+    public void openConnection(){
+        try {
+            httpURLConnection = (HttpURLConnection) url.openConnection();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void setRangeBytes(long fileLength){
+        httpURLConnection.setRequestProperty("Range", "bytes="+fileLength+"-");
+        try {
+            url.openConnection();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private static final Logger logger = LogManager.getLogger(NetworkClient.class.getSimpleName());

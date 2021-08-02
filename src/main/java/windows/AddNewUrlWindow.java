@@ -31,10 +31,11 @@ public class AddNewUrlWindow extends Stage {
         DownloadTask downloadTask = new DownloadTask();
 
         var urlNameTextField = new TextField();
-        urlNameTextField.textProperty().addListener((observable, oldValue,newValue) ->
-                new Thread(()-> {
-                    if(urlNameTextField.getText().length() > 0) {
+        urlNameTextField.textProperty().addListener((observable, oldValue, newValue) ->
+                new Thread(() -> {
+                    if (urlNameTextField.getText().length() > 0) {
                         downloadTask.setNetworkClient(urlNameTextField.getText());
+//                        downloadTask.getNetworkClient().openConnection();
                         fileName = downloadTask.getNetworkClient().getRemoteFileName();
                         fileNameTextField.setText(fileName);
                     }
@@ -43,15 +44,15 @@ public class AddNewUrlWindow extends Stage {
         var okBtn = new Button("OK");
         okBtn.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
             logger.info("FilePathTextField : " + fileNameTextField.getText());
-            if(filePathTextField.getLength() > 0 ){
-                downloadTask.getNetworkClient().setNetworkUrl(urlNameTextField.getText());
-                downloadTask.getItem().setFileName(fileNameTextField.getText());
+            if (filePathTextField.getLength() > 0) {
+                downloadTask.getFileSystemClient().setFileName(fileNameTextField.getText());
+                downloadTask.getFileSystemClient().setFilePath(filePathTextField.getText());
                 downloadTask.getItem().setProgressBar(0);
                 downloadTask.getItem().setTotalSizeStr(downloadTask.getNetworkClient().getFileSizeStr());
                 downloadTask.getItem().setTotalSize(downloadTask.getNetworkClient().getRemoteFileSize());
-                downloadTask.getItem().setFilePath(filePathTextField.getText());
+
                 MainWindow mainWindow = MainWindow.getInstance();
-                downloadTask.getItem().setSNo(mainWindow.tableViewLength()+1);
+                downloadTask.getItem().setSNo(mainWindow.tableViewLength() + 1);
                 mainWindow.addDownloadItemToTheList(downloadTask);
                 addUrlStage.close();
             }

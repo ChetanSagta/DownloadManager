@@ -41,7 +41,10 @@ public class MainWindow {
         Button addButton = new Button("Add");
         addButton.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> new AddNewUrlWindow(primaryStage));
         Button deleteButton = new Button("Delete");
-        deleteButton.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> tableView.getItems().remove(selectedItem));
+        deleteButton.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+            //Todo: Kill the task assosiated as well, the download keeps on working
+            tableView.getItems().remove(selectedItem);
+        });
 
         Button playPauseButton = new Button("Play/Pause");
         playPauseButton.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
@@ -81,7 +84,7 @@ public class MainWindow {
         sNoCol.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getItem().getSNo()));
 
         TableColumn<DownloadTask, String> nameCol = new TableColumn<>("Name");
-        nameCol.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getItem().getFileName()));
+        nameCol.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getFileSystemClient().getFileName()));
 
         TableColumn<DownloadTask, Long> sizeCol = new TableColumn<>("Size");
         sizeCol.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getItem().getTotalSize()));
@@ -93,7 +96,7 @@ public class MainWindow {
         downloadSpeed.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getItem().getDownloadSpeed()));
 
         TableColumn<DownloadTask, String> fileLocation = new TableColumn<>("Location");
-        fileLocation.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getItem().getFilePath()));
+        fileLocation.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getFileSystemClient().getFilePath()));
 
         TableColumn<DownloadTask, ProgressBar> progressCol = new TableColumn<>("Progress");
         progressCol.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getItem().getProgressBar()));
@@ -114,7 +117,7 @@ public class MainWindow {
         primaryStage.setResizable(false);
         primaryStage.show();
 
-        primaryStage.setOnCloseRequest((event) -> {
+        primaryStage.setOnCloseRequest(event -> {
                     Platform.exit();
                     System.exit(0);
         });
