@@ -14,11 +14,13 @@ public class NetworkClient {
     private URL url = null;
     private HttpURLConnection httpURLConnection = null;
     private String networkUrl = null;
-    private long remoteFileSize = 1;
+    private long remoteFileSize ;
+    private String downloadSpeed;
 
     public NetworkClient(String networkUrl) {
         try {
             this.networkUrl = networkUrl;
+            if(this.networkUrl.equals(""))  return ;
             url = new URL(this.networkUrl);
             httpURLConnection = (HttpURLConnection) url.openConnection();
         } catch (IOException ex) {
@@ -59,6 +61,14 @@ public class NetworkClient {
         return networkUrl;
     }
 
+    public String getDownloadSpeed() {
+        return downloadSpeed;
+    }
+
+    public void setDownloadSpeed(String downloadSpeed) {
+        this.downloadSpeed = downloadSpeed;
+    }
+
     public InputStream getInputStream() {
         try {
             setRemoteFileSize();
@@ -84,6 +94,19 @@ public class NetworkClient {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void calculateDownloadSpeed(long size, long timeTaken){
+        double downloadRatio = 1.0*(size*1000000000)/timeTaken;
+        if ((downloadRatio = downloadRatio / 1024) < 1024) {
+            downloadSpeed =  downloadRatio + "KB/s";
+        } else if ((downloadRatio = downloadRatio / 1024) < 1024) {
+            downloadSpeed = downloadRatio + "MB/s";
+        } else if ((downloadRatio = downloadRatio / 1024) < 1024) {
+            downloadSpeed = downloadRatio + "GB/s";
+        } else
+            downloadSpeed = downloadRatio + "B/s";
+
     }
 
     private static final Logger logger = LogManager.getLogger(NetworkClient.class.getSimpleName());

@@ -58,36 +58,44 @@ public class DownloadTask implements Runnable{
     public void downloadFile(){
         FileOutputStream fileOutputStream = null;
         InputStream inputStream = null;
+        long startSize = 0;
 
         try {
-            logger.info("FilePath : " + fileSystemClient.getFilePath());
             fileSystemClient.createDirectories();
-
             String fileStreamPath = fileSystemClient.getFilePath() + File.separatorChar + fileSystemClient.getFileName();
             //just a workaround to create new connection for downloading using old connection already created
             // when fetching the remote file name during adding new url to the download list
-            networkClient = new NetworkClient(networkClient.getNetworkUrl());
             if(fileSystemClient.isFilePresent()) {
                 fileSystemClient.findFileSize();
+                startSize = fileSystemClient.getFileSize();
+                if( startSize== networkClient.getRemoteFileSize()) {
+                    item.setDownloadState(DownloadState.COMPLETED);
+                    updateProgressBar();
+                    MainWindow.getInstance().updateTableView();
+                    return;
+                }
+                networkClient = new NetworkClient(networkClient.getNetworkUrl());
                 networkClient.setRangeBytes(fileSystemClient.getFileSize());
                 fileOutputStream = new FileOutputStream(fileStreamPath, true);
             }
             else
                 fileOutputStream = new FileOutputStream(fileStreamPath);
             inputStream = networkClient.getInputStream();
-            logger.info("InputStream Created");
             byte[] networkBytes = new byte[4096];
             int bytesRead;
-            logger.info("Downloading started");
+            long startTime = System.nanoTime();
+
             while (item.getDownloadState() == DownloadState.PLAY && (bytesRead = inputStream.read(networkBytes,0,4096)) != -1) {
                 fileOutputStream.write(networkBytes,0,bytesRead);
                 fileSystemClient.findFileSize();
                 updateProgressBar();
-                logger.info("Current Progress Value : " + item.getProgressBar().getProgress());
                 if(item.getProgressBar().getProgress() == 1.0) item.setDownloadState(DownloadState.COMPLETED);
+                long currentTime = System.nanoTime();
+                long currentSize = fileSystemClient.getFileSize();
+                networkClient.calculateDownloadSpeed(currentSize - startSize,currentTime-startTime);
+                item.setPercentage(fileSystemClient.getFileSize() * 100 / networkClient.getRemoteFileSize() +"%");
                 MainWindow.getInstance().updateTableView();
             }
-            logger.info("Current Download Status " + item.getDownloadState());
         } catch(IOException ex){
             logger.info("Exception caught while downloading file : " + ex);
         }

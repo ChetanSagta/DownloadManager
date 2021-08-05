@@ -18,7 +18,6 @@ import org.apache.log4j.Logger;
 
 import java.io.File;
 
-
 public class AddNewUrlWindow extends Stage {
 
     private TextField filePathTextField = null;
@@ -35,7 +34,6 @@ public class AddNewUrlWindow extends Stage {
                 new Thread(() -> {
                     if (urlNameTextField.getText().length() > 0) {
                         downloadTask.setNetworkClient(urlNameTextField.getText());
-//                        downloadTask.getNetworkClient().openConnection();
                         fileName = downloadTask.getNetworkClient().getRemoteFileName();
                         fileNameTextField.setText(fileName);
                     }
@@ -43,7 +41,6 @@ public class AddNewUrlWindow extends Stage {
 
         var okBtn = new Button("OK");
         okBtn.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-            logger.info("FilePathTextField : " + fileNameTextField.getText());
             if (filePathTextField.getLength() > 0) {
                 downloadTask.getFileSystemClient().setFileName(fileNameTextField.getText());
                 downloadTask.getFileSystemClient().setFilePath(filePathTextField.getText());
@@ -53,6 +50,9 @@ public class AddNewUrlWindow extends Stage {
 
                 MainWindow mainWindow = MainWindow.getInstance();
                 downloadTask.getItem().setSNo(mainWindow.tableViewLength() + 1);
+                while(downloadTask.getFileSystemClient().isFilePresent()){
+                    downloadTask.getFileSystemClient().updateFileName();
+                }
                 mainWindow.addDownloadItemToTheList(downloadTask);
                 addUrlStage.close();
             }

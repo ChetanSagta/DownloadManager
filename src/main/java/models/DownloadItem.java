@@ -9,14 +9,13 @@ public class DownloadItem{
     private String totalSizeStr;
     private DownloadState downloadState;
     private final ProgressBar progressBar;
-    private String downloadSpeed;
+    private String percentage;
 
     public DownloadItem(){
         sNo=0;
         totalSize=0;
         totalSizeStr="";
         downloadState = DownloadState.STOP;
-        downloadSpeed="0";
         progressBar=new ProgressBar(0);
     }
 
@@ -51,14 +50,6 @@ public class DownloadItem{
         this.downloadState = downloadState;
     }
 
-    public String getDownloadSpeed() {
-        return downloadSpeed;
-    }
-
-    public void setDownloadSpeed(String downloadSpeed) {
-        this.downloadSpeed = downloadSpeed;
-    }
-
     public ProgressBar getProgressBar() {
         return progressBar;
     }
@@ -75,16 +66,21 @@ public class DownloadItem{
         this.totalSizeStr = totalSizeStr;
     }
 
+    public String getPercentage() {
+        return percentage;
+    }
+
+    public void setPercentage(String percentage) {
+        this.percentage = percentage;
+    }
+
     @Override
     public String toString() {
         return "DownloadItem{" +
                 "sNo=" + sNo +
-//                ", name='" + fileName + '\'' +
                 ", totalSize=" + totalSize +
                 ", downloadState=" + downloadState +
                 ", progressBar=" + progressBar +
-//                ", filePath='" + filePath + '\'' +
-                ", downloadSpeed='" + downloadSpeed + '\'' +
                 '}';
     }
 }

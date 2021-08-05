@@ -4,6 +4,7 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
 import java.io.File;
+import java.io.IOException;
 
 public class FileSystemClient {
 
@@ -62,6 +63,18 @@ public class FileSystemClient {
     public boolean isFilePresent(){
         File tempFile = new File(filePath + File.separatorChar + fileName);
         return tempFile.exists();
+    }
+
+    public void updateFileName(){
+        fileName = fileName + "(1)";
+    }
+
+    public void navigateToFilePath(){
+        try {
+            Runtime.getRuntime().exec("explorer.exe /select," + filePath + File.separatorChar + fileName);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private static final Logger logger = LogManager.getLogger(FileSystemClient.class.getSimpleName());
