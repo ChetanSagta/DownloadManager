@@ -6,15 +6,20 @@ import utilities.FileSystemClient;
 import utilities.NetworkClient;
 import windows.MainWindow;
 
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+@XmlRootElement
 public class DownloadTask implements Runnable{
 
+    @XmlElement
     private NetworkClient networkClient;
     private DownloadItem item;
+    @XmlElement
     private final FileSystemClient fileSystemClient;
 
     public DownloadTask() {

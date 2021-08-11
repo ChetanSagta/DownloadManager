@@ -4,7 +4,6 @@ import javafx.scene.control.ProgressBar;
 
 public class DownloadItem{
 
-    private int sNo;
     private long totalSize;
     private String totalSizeStr;
     private DownloadState downloadState;
@@ -12,26 +11,16 @@ public class DownloadItem{
     private String percentage;
 
     public DownloadItem(){
-        sNo=0;
         totalSize=0;
         totalSizeStr="";
         downloadState = DownloadState.STOP;
         progressBar=new ProgressBar(0);
     }
 
-    public DownloadItem(int sNo, long totalSize, DownloadState downloadState,ProgressBar progressBar) {
-        this.sNo = sNo;
+    public DownloadItem(long totalSize, DownloadState downloadState,ProgressBar progressBar) {
         this.totalSize = totalSize;
         this.downloadState = downloadState;
         this.progressBar = progressBar;
-    }
-
-    public int getSNo() {
-        return sNo;
-    }
-
-    public void setSNo(int sNo) {
-        this.sNo = sNo;
     }
 
     public long getTotalSize() {
@@ -77,7 +66,6 @@ public class DownloadItem{
     @Override
     public String toString() {
         return "DownloadItem{" +
-                "sNo=" + sNo +
                 ", totalSize=" + totalSize +
                 ", downloadState=" + downloadState +
                 ", progressBar=" + progressBar +

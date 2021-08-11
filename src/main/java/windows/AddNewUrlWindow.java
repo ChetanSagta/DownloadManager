@@ -49,9 +49,9 @@ public class AddNewUrlWindow extends Stage {
                 downloadTask.getItem().setTotalSize(downloadTask.getNetworkClient().getRemoteFileSize());
 
                 MainWindow mainWindow = MainWindow.getInstance();
-                downloadTask.getItem().setSNo(mainWindow.tableViewLength() + 1);
+                int count = 0;
                 while(downloadTask.getFileSystemClient().isFilePresent()){
-                    downloadTask.getFileSystemClient().updateFileName();
+                    downloadTask.getFileSystemClient().updateFileName(++count);
                 }
                 mainWindow.addDownloadItemToTheList(downloadTask);
                 addUrlStage.close();

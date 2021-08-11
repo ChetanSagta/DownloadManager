@@ -17,9 +17,11 @@ public class NetworkClient {
     private long remoteFileSize ;
     private String downloadSpeed;
 
+    public NetworkClient(){}
+
     public NetworkClient(String networkUrl) {
         try {
-            this.networkUrl = networkUrl;
+            setNetworkUrl(networkUrl);
             if(this.networkUrl.equals(""))  return ;
             url = new URL(this.networkUrl);
             httpURLConnection = (HttpURLConnection) url.openConnection();

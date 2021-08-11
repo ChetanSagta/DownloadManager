@@ -1,6 +1,7 @@
 package windows;
 
 import javafx.application.Platform;
+import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.geometry.Insets;
 import javafx.scene.Cursor;
@@ -18,8 +19,10 @@ import models.DownloadState;
 import models.DownloadTask;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
+import preference.SystemPreference;
 import utilities.ThreadPool;
 
+import java.util.List;
 import java.util.Objects;
 
 public class MainWindow {
@@ -76,7 +79,7 @@ public class MainWindow {
         optionButtons.setPadding(new Insets(10, 0, 10, 170));
         optionButtons.fillHeightProperty();
 
-        tableView = new TableView<>();
+//        tableView = new TableView<>();
         tableView.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
             selectedItem = tableView.getSelectionModel().getSelectedItem();
             if(event.getClickCount() == 2){
@@ -86,7 +89,7 @@ public class MainWindow {
 
         TableColumn<DownloadTask, Integer> sNoCol = new TableColumn<>("S.No.");
 
-        sNoCol.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getItem().getSNo()));
+        sNoCol.setCellValueFactory(column-> new ReadOnlyObjectWrapper<>(tableView.getItems().indexOf(column.getValue())+1));
 
         TableColumn<DownloadTask, String> nameCol = new TableColumn<>("Name");
         nameCol.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getFileSystemClient().getFileName()));
@@ -126,10 +129,20 @@ public class MainWindow {
         primaryStage.show();
 
         primaryStage.setOnCloseRequest(event -> {
-                    Platform.exit();
-                    System.exit(0);
+            SystemPreference systemPreference = new SystemPreference();
+            systemPreference.saveApplicationState();
+            Platform.exit();
+            System.exit(0);
         });
 
+    }
+
+    public TableView<DownloadTask> getTableView(){
+        return tableView;
+    }
+
+    public void setTableView(List<DownloadTask> downloadTasksList){
+        tableView.getItems().addAll(downloadTasksList);
     }
 
     public void addDownloadItemToTheList(DownloadTask item) {

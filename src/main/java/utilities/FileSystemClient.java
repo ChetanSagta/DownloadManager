@@ -5,13 +5,14 @@ import org.apache.log4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.regex.Pattern;
 
 public class FileSystemClient {
 
     private long fileSize;
     private String filePath;
     private String fileName;
-    File file = null;
+    private File file = null;
 
     public void findFileSize() {
         file = new File(filePath + File.separatorChar + fileName);
@@ -65,8 +66,16 @@ public class FileSystemClient {
         return tempFile.exists();
     }
 
-    public void updateFileName(){
-        fileName = fileName + "(1)";
+    public void updateFileName(int number){
+        String[] fileSections = fileName.split("\\.");
+        if(number == 1){
+            fileName = fileSections[0]+"("+number+")."+fileSections[1];
+        }
+        else {
+            Pattern pattern = Pattern.compile("\\(\\d+\\)");
+            fileName = pattern.matcher(fileSections[0]).replaceAll("(" + number + ")")+"."+fileSections[1];
+        }
+        logger.info("Updated Filename " + fileName);
     }
 
     public void navigateToFilePath(){
