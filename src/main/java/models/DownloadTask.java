@@ -80,12 +80,13 @@ public class DownloadTask implements Runnable{
                     return;
                 }
                 networkClient = new NetworkClient(networkClient.getNetworkUrl());
-                networkClient.setRangeBytes(fileSystemClient.getFileSize());
+                networkClient.setRangeBytes(startSize);
                 fileOutputStream = new FileOutputStream(fileStreamPath, true);
             }
             else
                 fileOutputStream = new FileOutputStream(fileStreamPath);
             inputStream = networkClient.getInputStream();
+            networkClient.setRemoteFileSize();
             byte[] networkBytes = new byte[4096];
             int bytesRead;
             long startTime = System.nanoTime();

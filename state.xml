@@ -2,139 +2,62 @@
 <xmlDownloadTask>
     <downloadTask>
         <networkClient>
-            <networkUrl>https://file-examples-com.github.io/uploads/2017/11/file_example_WAV_1MG.wav</networkUrl>
+            <networkUrl>https://file-examples-com.github.io/uploads/2018/04/file_example_AVI_1920_2_3MG.avi</networkUrl>
         </networkClient>
         <fileSystemClient>
-            <fileName>file_example_WAV_1MG.wav</fileName>
-            <filePath>E:\</filePath>
-        </fileSystemClient>
-        <item>
-            <downloadState>COMPLETED</downloadState>
-            <percentage>100%</percentage>
-            <totalSize>0</totalSize>
-            <totalSizeStr>1MB</totalSizeStr>
-        </item>
-    </downloadTask>
-    <downloadTask>
-        <networkClient>
-            <networkUrl>https://file-examples-com.github.io/uploads/2017/11/file_example_MP3_700KB.mp3</networkUrl>
-        </networkClient>
-        <fileSystemClient>
-            <fileName>file_example_MP3_700KB(1)(2)(3)(4).mp3</fileName>
-            <filePath>E:\</filePath>
-        </fileSystemClient>
-        <item>
-            <downloadState>COMPLETED</downloadState>
-            <percentage>100%</percentage>
-            <totalSize>0</totalSize>
-            <totalSizeStr>746KB</totalSizeStr>
-        </item>
-    </downloadTask>
-    <downloadTask>
-        <networkClient>
-            <networkUrl>https://file-examples-com.github.io/uploads/2017/11/file_example_MP3_5MG.mp3</networkUrl>
-        </networkClient>
-        <fileSystemClient>
-            <fileName>file_example_MP3_5MG.mp3</fileName>
+            <fileName>file_example_AVI_1920_2_3MG.avi</fileName>
             <filePath>E:\</filePath>
         </fileSystemClient>
         <item>
             <downloadState>PLAY</downloadState>
-            <percentage>145%</percentage>
+            <percentage>158%</percentage>
             <totalSize>0</totalSize>
-            <totalSizeStr>5MB</totalSizeStr>
+            <totalSizeStr>2MB</totalSizeStr>
         </item>
     </downloadTask>
     <downloadTask>
         <networkClient>
-            <networkUrl>https://file-examples-com.github.io/uploads/2017/11/file_example_WAV_1MG.wav</networkUrl>
+            <networkUrl>https://file-examples-com.github.io/uploads/2018/04/file_example_AVI_1920_2_3MG.avi</networkUrl>
         </networkClient>
         <fileSystemClient>
-            <fileName>file_example_WAV_(1)MG.wav</fileName>
+            <fileName>file_example_AVI_1920_2_3MG(1).avi</fileName>
             <filePath>E:\</filePath>
         </fileSystemClient>
         <item>
-            <downloadState>COMPLETED</downloadState>
-            <percentage>100%</percentage>
+            <downloadState>PLAY</downloadState>
+            <percentage>217%</percentage>
             <totalSize>0</totalSize>
-            <totalSizeStr>1MB</totalSizeStr>
+            <totalSizeStr>2MB</totalSizeStr>
         </item>
     </downloadTask>
     <downloadTask>
         <networkClient>
-            <networkUrl>https://file-examples-com.github.io/uploads/2017/11/file_example_WAV_1MG.wav</networkUrl>
+            <networkUrl>https://file-examples-com.github.io/uploads/2018/04/file_example_AVI_1920_2_3MG.avi</networkUrl>
         </networkClient>
         <fileSystemClient>
-            <fileName>file_example_WAV_(((3)))MG.wav</fileName>
+            <fileName>file_example_AVI_1920_2_3MG(2).avi</fileName>
             <filePath>E:\</filePath>
         </fileSystemClient>
         <item>
-            <downloadState>COMPLETED</downloadState>
+            <downloadState>STOP</downloadState>
             <percentage>100%</percentage>
             <totalSize>0</totalSize>
-            <totalSizeStr>1MB</totalSizeStr>
+            <totalSizeStr>2MB</totalSizeStr>
         </item>
     </downloadTask>
     <downloadTask>
         <networkClient>
-            <networkUrl>https://file-examples-com.github.io/uploads/2017/10/file_example_JPG_100kB.jpg</networkUrl>
+            <networkUrl>https://file-examples-com.github.io/uploads/2018/04/file_example_AVI_1920_2_3MG.avi</networkUrl>
         </networkClient>
         <fileSystemClient>
-            <fileName>file_example_JPG_100kB.jpg</fileName>
+            <fileName>file_example_AVI_1920_2_3MG(3).avi</fileName>
             <filePath>E:\</filePath>
         </fileSystemClient>
         <item>
-            <downloadState>COMPLETED</downloadState>
-            <percentage>100%</percentage>
+            <downloadState>PLAY</downloadState>
+            <percentage>131%</percentage>
             <totalSize>0</totalSize>
-            <totalSizeStr>99KB</totalSizeStr>
-        </item>
-    </downloadTask>
-    <downloadTask>
-        <networkClient>
-            <networkUrl>https://file-examples-com.github.io/uploads/2017/10/file_example_JPG_100kB.jpg</networkUrl>
-        </networkClient>
-        <fileSystemClient>
-            <fileName>file_example_JPG_100kB(1).jpg</fileName>
-            <filePath>E:\</filePath>
-        </fileSystemClient>
-        <item>
-            <downloadState>COMPLETED</downloadState>
-            <percentage>100%</percentage>
-            <totalSize>0</totalSize>
-            <totalSizeStr>99KB</totalSizeStr>
-        </item>
-    </downloadTask>
-    <downloadTask>
-        <networkClient>
-            <downloadSpeed>9.37074073556733MB/s</downloadSpeed>
-            <networkUrl>https://file-examples-com.github.io/uploads/2017/10/file_example_JPG_100kB.jpg</networkUrl>
-        </networkClient>
-        <fileSystemClient>
-            <fileName>file_example_JPG_100kB(2).jpg</fileName>
-            <filePath>E:\</filePath>
-        </fileSystemClient>
-        <item>
-            <downloadState>COMPLETED</downloadState>
-            <percentage>100%</percentage>
-            <totalSize>0</totalSize>
-            <totalSizeStr>99KB</totalSizeStr>
-        </item>
-    </downloadTask>
-    <downloadTask>
-        <networkClient>
-            <downloadSpeed>27.016495178088892MB/s</downloadSpeed>
-            <networkUrl>https://file-examples-com.github.io/uploads/2017/10/file_example_JPG_100kB.jpg</networkUrl>
-        </networkClient>
-        <fileSystemClient>
-            <fileName>file_example_JPG_100kB(3).jpg</fileName>
-            <filePath>E:\</filePath>
-        </fileSystemClient>
-        <item>
-            <downloadState>COMPLETED</downloadState>
-            <percentage>100%</percentage>
-            <totalSize>0</totalSize>
-            <totalSizeStr>99KB</totalSizeStr>
+            <totalSizeStr>2MB</totalSizeStr>
         </item>
     </downloadTask>
 </xmlDownloadTask>

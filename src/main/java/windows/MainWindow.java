@@ -4,6 +4,7 @@ import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -69,17 +70,17 @@ public class MainWindow {
 
         Button settings = new Button("Settings");
         settings.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-            logger.info("Settings Button Pressed");
+            new SettingsWindow(primaryStage);
         });
 
         HBox optionButtons = new HBox(addButton, deleteButton, playButton, stop, settings);
-        optionButtons.setSpacing(10);
+        optionButtons.setSpacing(20);
         optionButtons.setBorder(new Border(new BorderStroke(Color.BLACK,
                 BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
-        optionButtons.setPadding(new Insets(10, 0, 10, 170));
+        optionButtons.setPadding(new Insets(10, 0, 10, 0));
+        optionButtons.setAlignment(Pos.CENTER);
         optionButtons.fillHeightProperty();
 
-//        tableView = new TableView<>();
         tableView.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
             selectedItem = tableView.getSelectionModel().getSelectedItem();
             if(event.getClickCount() == 2){
@@ -122,7 +123,7 @@ public class MainWindow {
         vBox.setCursor(Cursor.HAND);
         vBox.setFillWidth(true);
 
-        Scene primaryScene = new Scene(vBox);
+        Scene primaryScene = new Scene(vBox,740,450);
         primaryStage.setScene(primaryScene);
         primaryStage.sizeToScene();
         primaryStage.setResizable(false);

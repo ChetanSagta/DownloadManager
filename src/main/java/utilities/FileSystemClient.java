@@ -75,7 +75,6 @@ public class FileSystemClient {
             Pattern pattern = Pattern.compile("\\(\\d+\\)");
             fileName = pattern.matcher(fileSections[0]).replaceAll("(" + number + ")")+"."+fileSections[1];
         }
-        logger.info("Updated Filename " + fileName);
     }
 
     public void navigateToFilePath(){

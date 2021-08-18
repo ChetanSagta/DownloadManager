@@ -3,8 +3,6 @@ package preference;
 import javafx.scene.control.TableView;
 import models.DownloadTask;
 import models.XmlDownloadTask;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
 import windows.MainWindow;
 
 import javax.xml.bind.JAXBContext;
@@ -32,7 +30,6 @@ public class SystemPreference {
             }
             File file = new File(fileName);
             marshallerObj.marshal(xmlDownloadTasks,file);
-            logger.info("Wrote request to file "+ file);
         } catch (JAXBException e) {
             e.printStackTrace();
         }
@@ -41,18 +38,14 @@ public class SystemPreference {
     public XmlDownloadTask getApplicationState() {
 
         File xmlFile = new File(fileName);
-        logger.info("File Read : " + xmlFile);
         XmlDownloadTask xmlDownloadTasks = null;
-
-        JAXBContext jaxbContext;
         try
         {
-            jaxbContext = JAXBContext.newInstance(XmlDownloadTask.class);
+            JAXBContext jaxbContext = JAXBContext.newInstance(XmlDownloadTask.class);
             Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
             if(xmlFile == null)
                 return null;
             xmlDownloadTasks = (XmlDownloadTask) jaxbUnmarshaller.unmarshal(xmlFile);
-
         }
         catch (JAXBException e)
         {
@@ -60,7 +53,5 @@ public class SystemPreference {
         }
         return xmlDownloadTasks;
     }
-
-    Logger logger = LogManager.getLogger(getClass().getName());
 
 }

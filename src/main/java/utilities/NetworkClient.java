@@ -73,7 +73,6 @@ public class NetworkClient {
 
     public InputStream getInputStream() {
         try {
-            setRemoteFileSize();
             return httpURLConnection.getInputStream();
         } catch (IOException ex) {
             logger.info("Exception Caught While Returning input stream from Network Client : " + ex);
@@ -91,11 +90,6 @@ public class NetworkClient {
 
     public void setRangeBytes(long fileLength){
         httpURLConnection.setRequestProperty("Range", "bytes="+fileLength+"-");
-        try {
-            url.openConnection();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     public void calculateDownloadSpeed(long size, long timeTaken){
